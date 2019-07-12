@@ -17,7 +17,7 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        root.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        root.getStylesheets().add(getClass().getResource("light_style.css").toExternalForm());
     }
 
     public static void main(String[] args) {

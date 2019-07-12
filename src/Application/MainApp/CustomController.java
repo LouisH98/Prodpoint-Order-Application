@@ -25,6 +25,8 @@ public class CustomController extends HBox {
     @FXML
     private Label colourLabel;
 
+
+
     File file;
 
     public CustomController(File f) {
@@ -34,10 +36,6 @@ public class CustomController extends HBox {
         fxmlLoader.setController(this);
 
         file = f;
-
-
-
-
 
         try {
             fxmlLoader.load();

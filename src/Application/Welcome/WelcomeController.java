@@ -1,6 +1,5 @@
 package Application.Welcome;
 
-import Application.MainApp.MainController;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,43 +20,43 @@ public class WelcomeController {
     private JFXButton loadOrderButton;
 
 
-    FXMLLoader openMainWindow(){
+    FXMLLoader openDirSelection(){
         try{
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Application/MainApp/main.fxml"));
-            Parent mainScene = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/Application/ProcessingWindow/ProcessingLayout.fxml"));
+            Parent myScene = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Main Window");
-            stage.setScene(new Scene(mainScene));
+            stage.setTitle("Select Folder");
+            stage.setScene(new Scene(myScene));
             stage.sizeToScene();
+            stage.setResizable(false);
             stage.show();
 
+
             return loader;
+
         }
         catch (IOException e){
             e.printStackTrace();
         }
+
         return null;
+
     }
 
     @FXML
     void createNewOrder(ActionEvent event) {
 
-        //open the window and get a reference to the controller
-        MainController controller = openMainWindow().getController();
-
-        //simulate calling a function
+        openDirSelection();
 
         //hide this window
         ((Node)(event.getSource())).getScene().getWindow().hide();
-
-
     }
 
 
     @FXML
     void loadOrder(ActionEvent event) {
-        MainController controller = openMainWindow().getController();
+//        MainController controller = openMainWindow().getController();
 
         //simulate loading a file
 

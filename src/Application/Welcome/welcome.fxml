@@ -35,12 +35,12 @@
             </Label>
             <HBox alignment="CENTER" prefHeight="39.0" prefWidth="450.0" spacing="30.0">
                <children>
-                  <JFXButton fx:id="createNewButton" buttonType="RAISED" onAction="#createNewOrder" style="-fx-background-color: #8527f5;" text="Create New Order">
+                  <JFXButton fx:id="createNewButton" buttonType="RAISED" onAction="#createNewOrder" styleClass="my-button" text="Create New Order">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="loadOrderButton" buttonType="RAISED" onAction="#loadOrder" style="-fx-background-color: #8527f5;" text="Load Order">
+                  <JFXButton fx:id="loadOrderButton" buttonType="RAISED" onAction="#loadOrder" styleClass="my-button" text="Load Order">
                      <font>
                         <Font size="16.0" />
                      </font>
