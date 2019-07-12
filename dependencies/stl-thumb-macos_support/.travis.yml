@@ -1,0 +1,52 @@
+dist: xenial
+language: rust
+cache: cargo
+
+addons:
+    apt:
+        packages:
+            - libxxf86vm-dev
+            - libosmesa6-dev
+
+matrix:
+    include:
+        - env: TARGET=x86_64-unknown-linux-gnu
+        - env: TARGET=armv7-unknown-linux-gnueabihf DISABLE_TESTS=1
+          addons:
+            apt:
+                packages:
+                    - gcc-arm-linux-gnueabihf
+                    - libc-dev-armhf-cross
+        - env: TARGET=aarch64-unknown-linux-gnu DISABLE_TESTS=1
+          addons:
+            apt:
+                packages:
+                    - gcc-aarch64-linux-gnu
+                    - libc-dev-arm64-cross
+
+before_install:
+    - cargo install cargo-deb || echo "cargo-deb already installed"
+
+install:
+    - rustup self update
+    - rustup target add $TARGET; true
+
+script:
+    - cargo build --release --target $TARGET
+    - if [ ! $DISABLE_TESTS ]; then RUST_BACKTRACE=1 xvfb-run cargo test --target $TARGET; fi
+
+before_deploy:
+    - mkdir target/deploy/
+    - cargo deb --target $TARGET
+    - cp target/$TARGET/debian/*.deb target/deploy/
+
+deploy:
+    provider: releases
+    api_key:
+        secure: quu90p1jBVw0ptI+4uucuGYbHg1scYZB1RHeDPUq593mmlTlTIbMdU4dUpOQfRe6NDMGNtXzdJSMqjPPAbYngwHtWiAzozIfb2bFBfgcGllhJZ6XHV+ElzJMyWbtsRNskt67AsqYHjwcYXTqBhlcx0aODpCd2HkzjS7Dl2HKriJ0FgmVkSeZqHN51yBoURoVI9QqMTlu9xrR5Xu9YEaqIukbi5zL7S4g9Qmhvtt/JXUvxK8OeOc+FAqUTRlQUWg4vOSr9p493nC4zogH1FMuebR/3GW3CvQFI2Ld2tuOK3g44fnPTyesAEgXY4VrQ84FvodsCi9WSgGhWp+0N1I4cfKm3g//VT0R48SgS7JZzr6pqtcB8xLnY4W2p0CBfidevTiRogbQANA/X8cOeW8khfNJpBgVUGLHIlCYnKGfTL7TLb1zMCHQvi0JJ5gfnYtXOuhxq1p4cY76YSBimQLaLzc4IvkkslH1Tpm0t5s0EOG6eN6PI3fWFJbrMloAE+4S8iswXvqbpa6F7MtfxfKMEBWU+Odg2E7x+xegL7B5y7Wsx7ILI/NdqpMpndQ1pjFugqMzmUXMteX4Wc44SYBMxUEg1bwPvyEvIITaz1X+93nUdBkwdnx8YiPermjucZV9Nt1YoRtD0ZyIGh+KSfzBMiHWzQg/RJU2HcGugqsPh7c=
+    file_glob: true
+    file: "target/deploy/*"
+    on:
+        repo: unlimitedbacon/stl-thumb
+        tags: true
+    skip_cleanup: true
