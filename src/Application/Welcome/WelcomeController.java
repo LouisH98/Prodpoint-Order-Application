@@ -1,5 +1,6 @@
 package Application.Welcome;
 
+import Application.PropertiesHandler;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class WelcomeController {
 
@@ -25,7 +27,7 @@ public class WelcomeController {
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("/Application/ProcessingWindow/ProcessingLayout.fxml"));
             Parent myScene = loader.load();
-            Stage stage = new Stage();
+            Stage stage = (Stage) createNewButton.getScene().getWindow();
             stage.setTitle("Select Folder");
             stage.setScene(new Scene(myScene));
             stage.sizeToScene();
@@ -48,9 +50,7 @@ public class WelcomeController {
     void createNewOrder(ActionEvent event) {
 
         openDirSelection();
-
-        //hide this window
-        ((Node)(event.getSource())).getScene().getWindow().hide();
+//        PropertiesHandler.setDarkMode(true);
     }
 
 
@@ -64,5 +64,4 @@ public class WelcomeController {
         ((Node)(event.getSource())).getScene().getWindow().hide();
 
     }
-
 }

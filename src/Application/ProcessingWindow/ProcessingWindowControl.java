@@ -1,5 +1,6 @@
 package Application.ProcessingWindow;
 
+import Application.PropertiesHandler;
 import Application.STLProcessor;
 import Application.MainApp.MainController;
 
@@ -126,4 +127,5 @@ public class ProcessingWindowControl {
             });
         }
     }
+
 }

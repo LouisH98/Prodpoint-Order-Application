@@ -43,3 +43,4 @@ out/production/Prodpoint-Order-Application/Application/ProcessingWindow/Processi
 out/production/Prodpoint-Order-Application/Application/STLProcessor.class
 out/production/Prodpoint-Order-Application/Application/Welcome/welcome.fxml
 out/production/Prodpoint-Order-Application/Application/Welcome/WelcomeController.class
+dependencies/stl-thumb-macos_support/.cargo/config

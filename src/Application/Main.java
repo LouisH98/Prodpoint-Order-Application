@@ -1,5 +1,6 @@
 package Application;
 
+import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,9 +16,9 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.sizeToScene();
         primaryStage.setResizable(false);
-        primaryStage.show();
 
-        root.getStylesheets().add(getClass().getResource("light_style.css").toExternalForm());
+
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
