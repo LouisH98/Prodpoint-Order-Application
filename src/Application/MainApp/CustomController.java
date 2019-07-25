@@ -61,5 +61,4 @@ public class CustomController extends HBox {
 
         hbox.setOnMouseExited(e-> hbox.setStyle("-fx-background-color:rgba(0,0,0,0);"));
     }
-
 }

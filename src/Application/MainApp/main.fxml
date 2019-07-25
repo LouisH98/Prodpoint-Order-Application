@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="834.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.MainApp.MainController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.MainApp.MainController">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="selectFolder" mnemonicParsing="false" text="Select Folder" />
+              <MenuItem fx:id="createNewOrderButton" mnemonicParsing="false" onAction="#createNewOrder" text="New Order" />
+                  <MenuItem fx:id="loadOrderButton" mnemonicParsing="false" text="Load Order" />
+                  <MenuItem fx:id="importFilesButton" disable="true" mnemonicParsing="false" onAction="#importSTLFiles" text="Import STL Files" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Options">
@@ -31,57 +27,24 @@
           </Menu>
         </menus>
       </MenuBar>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <right>
-            <GridPane alignment="CENTER" prefHeight="475.0" prefWidth="414.0" BorderPane.alignment="CENTER">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button fx:id="addElementButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#addElement" prefHeight="18.0" prefWidth="97.0" text="Add Element" GridPane.rowIndex="1" />
-                  <Button fx:id="removeAllButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#removeAllElements" text="Remove All" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <children>
-                        <Label fx:id="helpLab" layoutX="6.0" layoutY="71.0" text="Please select a directory" />
-                     </children>
-                  </Pane>
-               </children>
-            </GridPane>
-         </right>
-         <left>
-            <VBox prefHeight="475.0" prefWidth="386.0" style="-fx-border-color: lightgray; -fx-border-width: 0 2px 0 0;" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="384.0" spacing="30.0">
-                     <children>
-                        <Label text="Preview">
-                           <HBox.margin>
-                              <Insets left="25.0" />
-                           </HBox.margin>
-                        </Label>
-                        <Label text="Name" />
-                        <Label text="Plastic" />
-                        <Label text="Colour" />
-                        <Label text="Quantity" />
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </HBox>
-                  <ScrollPane fitToHeight="true" hbarPolicy="NEVER" prefHeight="425.0" prefWidth="485.0" style="-fx-padding: 0; -fx-background-insets: 0;">
-                     <content>
-                        <VBox fx:id="contentBox" alignment="TOP_CENTER" fillWidth="false" />
-                     </content>
-                  </ScrollPane>
-               </children>
-            </VBox>
-         </left>
-      </BorderPane>
+      <TableView style="-fx-focus-color: transparent; -fx-border-color: none; -fx-faint-focus-color: transparent;" VBox.vgrow="ALWAYS">
+          <placeholder>
+              <Label fx:id="infoLabel" text="Create a new order or load one via the file menu at the top.&#10;" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="17.0" />
+               </font></Label>
+          </placeholder>
+        <columns>
+          <TableColumn editable="false" prefWidth="175.0" text="Image Preview" />
+          <TableColumn editable="false" minWidth="-1.0" prefWidth="233.0" text="File Name" />
+            <TableColumn prefWidth="101.0" text="Material" />
+            <TableColumn minWidth="0.0" prefWidth="150.0" text="Colour" />
+            <TableColumn prefWidth="152.6666259765625" text="Quantity" />
+            <TableColumn prefWidth="152.0" text="Resolution" />
+        </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
+      </TableView>
    </children>
 </VBox>

@@ -1,6 +1,6 @@
 package Application.ProcessingWindow;
 
-import Application.PropertiesHandler;
+import Application.AlertHandler;
 import Application.STLProcessor;
 import Application.MainApp.MainController;
 
@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.DirectoryChooser;
@@ -17,10 +18,15 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class ProcessingWindowControl {
 
-    File directory;
+    File stlDirectory;
+
+    File projectDirectory;
 
     Stage stage;
 
@@ -60,37 +66,70 @@ public class ProcessingWindowControl {
     private void setDirectory(){
         DirectoryChooser chooser = new DirectoryChooser();
         chooser.setTitle("STL Folder Selection");
-        directory = chooser.showDialog(selectFolderButton.getScene().getWindow());
+        stlDirectory = chooser.showDialog(selectFolderButton.getScene().getWindow());
 
-        if(directory != null){
-            if(STLProcessor.countSTL(directory) == 0){
+        if(stlDirectory != null){
+            if(STLProcessor.countSTL(stlDirectory) == 0){
                 processingLab.setText("No STL's found. Please try again.");
             }
             else{
-                processFiles();
+                importAndProcessFiles();
             }
         }
     }
 
-    public void processFiles(){
+    public void setProjectDirectory(File dir){
+        this.projectDirectory = dir;
+    }
+
+    public void importFile(String from, String to) throws IOException{
+        Path src = Paths.get(from);
+        Path dest = Paths.get(to);
+        Files.copy(src, dest);
+    }
+
+    /*
+    This function calls the stl-thumb command for each file in the stlDirectory (in a new thread) and shows the progress on a bar.
+     */
+    public void importAndProcessFiles(){
 
         Stage stage = (Stage) progressBar.getScene().getWindow();
-        stage.setTitle("Processing");
-        if(directory.isDirectory() && directory != null) {
+        stage.setTitle("Importing");
+        //copy all STL files to the project directory
+        File[] srcFiles = stlDirectory.listFiles();
+        if(srcFiles != null){
+            for(File f : srcFiles){
+                try{
+                    importFile(f.getPath(), projectDirectory.getPath() + "/" + f.getName());
+
+                }
+                catch (IOException e){
+                    System.out.println("Failed to import file: " + f.getName());
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        if(stlDirectory.isDirectory() && stlDirectory != null) {
             progressBar.setVisible(true);
             selectFolderButton.setVisible(false);
             processingLab.setText("Processing...");
             progressLabel.setVisible(true);
+
+
 
             //carry out the processing on a separate thread
             Task task = new Task() {
                 @Override
                 protected Object call() throws Exception {
                     //get list of files and call processFile for each one
-                    if(directory != null && directory.isDirectory()){
+                    File[] filesInDirectory = projectDirectory.listFiles();
+
+                    if(projectDirectory != null && projectDirectory.isDirectory() && filesInDirectory != null){
                         int count = 0;
-                        int numFiles = directory.listFiles().length;
-                        for(File f : directory.listFiles()){
+                        int numFiles = STLProcessor.countSTL(projectDirectory);
+                        for(File f : filesInDirectory){
                             String result = STLProcessor.makeThumbnail(f);
 
                             if(result.length() > 0 ){
@@ -116,10 +155,9 @@ public class ProcessingWindowControl {
 
             task.setOnSucceeded(e->{
                 //open main window and load files in
-                MainController mainController = openMainWindow().getController();
+                AlertHandler.showAlert(Alert.AlertType.INFORMATION, "Files imported", STLProcessor.countSTL(projectDirectory) + " files imported","The STL files have been imported, the original folder can now be moved / deleted");
 
-                //TODO Populate the list
-                mainController.setDirectory(directory);
+                //TODO Send message to main window
 
                 //close this window
                 progressLabel.getScene().getWindow().hide();

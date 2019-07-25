@@ -50,7 +50,6 @@ public class WelcomeController {
     void createNewOrder(ActionEvent event) {
 
         openDirSelection();
-//        PropertiesHandler.setDarkMode(true);
     }
 
 
