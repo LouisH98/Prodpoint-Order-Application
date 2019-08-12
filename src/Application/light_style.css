@@ -2,7 +2,39 @@
 /*
 CSS For light theme Prodpoint Application
  */
-
 .my-button{
     background: gainsboro;
+}
+
+.table-view{
+    -fx-focus-color: transparent;
+    -fx-border-color: transparent;
+    -fx-faint-focus-color: transparent;
+
+}
+
+/* Selected Row*/
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: rgba(0, 165, 255, 0.65);
+}
+
+/* Change header font size*/
+.table-view .column-header{
+    -fx-font-size: 10pt;
+}
+
+
+/* Center items in cells */
+.table-cell{
+    -fx-alignment: CENTER;
+    -fx-font-size: 12pt;
+}
+
+.text-field-table-cell{
+    -fx-text-alignment: CENTER;
+}
+
+.order-info-wrapper{
+    -fx-background-color: white;
+    -fx-border-color: transparent;
 }

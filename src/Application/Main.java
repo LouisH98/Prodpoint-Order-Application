@@ -25,6 +25,7 @@ public class Main extends Application {
         MainController mainController = loader.getController();
         mainController.setMainApp(this);
 
+
         primaryStage.show();
     }
 
@@ -32,13 +33,13 @@ public class Main extends Application {
     /*
     Function to open a scene on a new window
      */
-    public FXMLLoader openWindow(String sceneURI){
+    public FXMLLoader openWindow(String sceneURI, String title){
         try{
             FXMLLoader loader = new FXMLLoader(Main.class
                     .getResource(sceneURI));
             Parent myScene = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("Create New Order");
+            stage.setTitle(title);
             stage.setScene(new Scene(myScene));
             stage.sizeToScene();
             stage.setResizable(false);

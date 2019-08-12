@@ -1,25 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.MainApp.MainController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="659.0" prefWidth="1143.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.MainApp.MainController">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem fx:id="createNewOrderButton" mnemonicParsing="false" onAction="#createNewOrder" text="New Order" />
-                  <MenuItem fx:id="loadOrderButton" mnemonicParsing="false" text="Load Order" />
-                  <MenuItem fx:id="importFilesButton" disable="true" mnemonicParsing="false" onAction="#importSTLFiles" text="Import STL Files" />
+                  <Menu mnemonicParsing="false" text="Load">
+                    <items>
+                        <MenuItem fx:id="openProjectButton" mnemonicParsing="false" onAction="#openProject" text="Open Project Folder" />
+                        <Menu mnemonicParsing="false" text="Recent">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                          </items>
+                        </Menu>
+                    </items>
+                  </Menu>
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Project">
+               <items>
+                  <MenuItem fx:id="importFilesButton" mnemonicParsing="false" onAction="#openImportWindow" text="Import files from folder" />
+                  <MenuItem mnemonicParsing="false" text="Import single file" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Options">
             <items>
               <MenuItem mnemonicParsing="false" text="Toggle Dark Mode" />
@@ -27,7 +44,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TableView style="-fx-focus-color: transparent; -fx-border-color: none; -fx-faint-focus-color: transparent;" VBox.vgrow="ALWAYS">
+      <TableView fx:id="fileTable" editable="true" VBox.vgrow="ALWAYS">
           <placeholder>
               <Label fx:id="infoLabel" text="Create a new order or load one via the file menu at the top.&#10;" textAlignment="CENTER" wrapText="true">
                <font>
@@ -35,16 +52,86 @@
                </font></Label>
           </placeholder>
         <columns>
-          <TableColumn editable="false" prefWidth="175.0" text="Image Preview" />
-          <TableColumn editable="false" minWidth="-1.0" prefWidth="233.0" text="File Name" />
-            <TableColumn prefWidth="101.0" text="Material" />
-            <TableColumn minWidth="0.0" prefWidth="150.0" text="Colour" />
-            <TableColumn prefWidth="152.6666259765625" text="Quantity" />
-            <TableColumn prefWidth="152.0" text="Resolution" />
+          <TableColumn fx:id="imagePreviewColumn" editable="false" minWidth="30.0" prefWidth="-1.0" sortable="false" text="Image Preview" />
+          <TableColumn fx:id="fileNameColumn" editable="false" minWidth="30.0" prefWidth="-1.0" text="File Name" />
+            <TableColumn fx:id="materialColumn" minWidth="30.0" prefWidth="-1.0" text="Material" />
+            <TableColumn fx:id="colourColumn" minWidth="30.0" prefWidth="-1.0" text="Colour" />
+            <TableColumn fx:id="quantityColumn" minWidth="30.0" prefWidth="-1.0" text="Quantity" />
+            <TableColumn fx:id="resolutionColumn" minWidth="-1.0" prefWidth="-1.0" text="Resolution" />
+            <TableColumn fx:id="resolutionColumn1" minWidth="-1.0" prefWidth="-1.0" text="Notes" />
         </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
+      <HBox fx:id="orderInfoContainer" alignment="CENTER" prefHeight="78.0" prefWidth="1000.0" spacing="30.0" styleClass="order-info-wrapper">
+         <children>
+            <Label text="Order #:" visible="false">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="-20.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="orderNumberLabel">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Label text="Client Name:" visible="false">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="-20.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="clientNameLabel" textAlignment="CENTER">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Label text="Last Updated:" visible="false">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="-20.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="lastUpdatedLabel">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <Label text="Due Date:" visible="false">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="-20.0" />
+               </HBox.margin>
+            </Label>
+            <Label fx:id="dueDateLabel">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="154.0" spacing="10.0">
+               <children>
+                  <Label fx:id="statusLabel">
+                     <font>
+                        <Font size="19.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="statusButton" mnemonicParsing="false" styleClass="status-button" text="Processing" visible="false" />
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets right="30.0" />
+         </padding>
+      </HBox>
    </children>
 </VBox>

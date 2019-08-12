@@ -52,20 +52,18 @@ public class NewOrderController {
         if (orderNumberField.getText().length() == 0) {
             orderNumberField.setStyle("-fx-border-color: red");
             problem = true;
-        } else {
-            problem = false;
         }
         if (clientNameField.getText().length() == 0) {
             clientNameField.setStyle("-fx-border-color: red");
             problem = true;
-        } else {
-            problem = false;
         }
         if (dueDatePicker.getEditor().getText().length() == 0) {
             dueDatePicker.setStyle("-fx-border-color: red");
             problem = true;
-        } else {
-            problem = false;
+        }
+
+        if (problem) {
+            return;
         }
 
         /*
@@ -74,37 +72,38 @@ public class NewOrderController {
         of the order in there.
         Then we can set the main app's directory to point to this folder & close the window.
          */
-        if (!problem) {
-            String orderNumberString = this.orderNumberField.getText();
 
-            File orderFolder = new File(PropertiesHandler.getOrdersFolder().getPath() + "/" + orderNumberString);
-            //Check if an order with the same name exists
-            if (orderFolder.exists()) {
-                AlertHandler.showAlert(Alert.AlertType.ERROR, "Error", "Order Creation Failed",
-                        "Order folder already exists, please try a different name");
-            } else {
+        String orderNumberString = this.orderNumberField.getText();
 
-                boolean created = orderFolder.mkdirs();
-                if (created) {
-                    System.out.println("Folder/s created");
-                }
+        File orderFolder = new File(PropertiesHandler.getOrdersFolder().getPath() + "/" + orderNumberString);
+        //Check if an order with the same name exists
+        if (orderFolder.exists()) {
+            AlertHandler.showAlert(Alert.AlertType.ERROR, "Error", "Order Creation Failed",
+                    "Order folder already exists, please try a different name");
+        } else {
 
-                //save the properties
-                try {
-                    PropertiesHandler.saveOrderInfo(orderFolder, orderNumberString, clientNameField.getText(),
-                            dueDatePicker.getValue());
-                } catch (IOException e) {
-                    System.out.println("Could not save order info");
-                }
-
-
-                //set the directory on the main controller
-                mainAppController.setDirectory(orderFolder);
-
-                //close the window
-                Stage stage = (Stage) orderNumberField.getScene().getWindow();
-                stage.close();
+            boolean created = orderFolder.mkdirs();
+            if (created) {
+                System.out.println("Folder/s created");
             }
+
+            //save the properties
+            try {
+                PropertiesHandler.saveOrderInfo(orderFolder, orderNumberString, clientNameField.getText(),
+                        dueDatePicker.getValue(), PropertiesHandler.ORDER_STATUS_PROCESSING);
+            } catch (IOException e) {
+                System.out.println("Could not save order info");
+            }
+
+
+            //set the directory on the main controller
+            mainAppController.setDirectory(orderFolder);
+
+
+
+            //close the window
+            Stage stage = (Stage) orderNumberField.getScene().getWindow();
+            stage.close();
         }
     }
 

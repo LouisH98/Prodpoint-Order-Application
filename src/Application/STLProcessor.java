@@ -14,7 +14,7 @@ public class STLProcessor {
 
 
     //image size squared.
-    static final int IMG_SIZE = 500;
+    static final int IMG_SIZE = 100;
 
     /**
      Function that returns the name of files in a folder

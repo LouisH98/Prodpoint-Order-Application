@@ -10,8 +10,9 @@ public class OrderInfoWrapper {
     private String clientName;
     private LocalDate dueDate;
     private LocalDate lastModified;
+    private String orderStatus;
 
-    public OrderInfoWrapper(String orderID, String clientName, LocalDate dueDate, LocalDate lastModified){
+    public OrderInfoWrapper(String orderID, String clientName, LocalDate dueDate, LocalDate lastModified, String orderStatus){
         this.orderID = orderID;
         this.clientName = clientName;
         this.dueDate = dueDate;

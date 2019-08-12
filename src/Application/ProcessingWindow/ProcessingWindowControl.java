@@ -28,7 +28,7 @@ public class ProcessingWindowControl {
 
     File projectDirectory;
 
-    Stage stage;
+    MainController mainWindow;
 
     @FXML
     private Label processingLab;
@@ -80,6 +80,10 @@ public class ProcessingWindowControl {
 
     public void setProjectDirectory(File dir){
         this.projectDirectory = dir;
+    }
+
+    public void setMainWindow(MainController controller){
+        mainWindow = controller;
     }
 
     public void importFile(String from, String to) throws IOException{
@@ -157,7 +161,7 @@ public class ProcessingWindowControl {
                 //open main window and load files in
                 AlertHandler.showAlert(Alert.AlertType.INFORMATION, "Files imported", STLProcessor.countSTL(projectDirectory) + " files imported","The STL files have been imported, the original folder can now be moved / deleted");
 
-                //TODO Send message to main window
+                mainWindow.generateColumns(true);
 
                 //close this window
                 progressLabel.getScene().getWindow().hide();
