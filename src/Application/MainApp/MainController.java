@@ -249,32 +249,28 @@ public class MainController {
          */
 
         //custom cell factory to open the file with default program
-        imagePreviewColumn.setCellFactory(param -> {
-            TableCell<STLFile, ImageView> cell = new TableCell<STLFile, ImageView>() {
-                @Override
-                protected void updateItem(ImageView item, boolean empty) {
-                    if (empty) {
-                        setGraphic(null);
-                    } else {
-                        STLFile stlFile = (STLFile) getTableRow().getItem();
+        imagePreviewColumn.setCellFactory(param -> new TableCell<STLFile, ImageView>() {
+            @Override
+            protected void updateItem(ImageView item, boolean empty) {
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    STLFile stlFile = (STLFile) getTableRow().getItem();
 
-                        ImageView imageView = stlFile.getPreview();
-                        setGraphic(imageView);
+                    ImageView imageView = stlFile.getPreview();
+                    setGraphic(imageView);
 
-                        setOnMouseClicked(event -> {
-                            if (event.getClickCount() == 2) {
-                                try {
-                                    Desktop.getDesktop().open(stlFile.getFile());
-                                } catch (IOException e) {
-                                    AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
-                                }
+                    setOnMouseClicked(event -> {
+                        if (event.getClickCount() == 2) {
+                            try {
+                                Desktop.getDesktop().open(stlFile.getFile());
+                            } catch (IOException e) {
+                                AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-            };
-
-            return cell;
+            }
         });
 
         materialColumn.setCellFactory(param -> {
