@@ -13,7 +13,6 @@ Contains information on:
 */
 
 
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -66,8 +65,9 @@ public class STLFile {
     private Image preview;
     private String resolution;
     private ObservableList<String> availableColours;
+    private StringProperty notes;
 
-    public STLFile(File f){
+    public STLFile(File f) {
         /*
         Set default values
          */
@@ -78,15 +78,23 @@ public class STLFile {
         this.quantity = 1;
         this.fileName = f.getName();
         this.availableColours = FXCollections.observableArrayList();
+        this.notes = new SimpleStringProperty("");
 
         //try to load the image
-        try{
-            this.preview = new Image(new FileInputStream(f.getParentFile().getPath() + "/img/" + f.getName()+".png"));
-        }
-        catch (FileNotFoundException e){
+        try {
+            this.preview = new Image(new FileInputStream(f.getParentFile().getPath() + "/img/" + f.getName() + ".png"));
+        } catch (FileNotFoundException e) {
             System.out.println("Image file for the file could not be found");
             e.printStackTrace();
         }
+    }
+
+    public String getNotes() {
+        return notes.getValue();
+    }
+
+    public void setNotes(String newNote) {
+        notes.setValue(newNote);
     }
 
     public String getFileName() {
@@ -109,7 +117,9 @@ public class STLFile {
         this.colour.set(colour);
     }
 
-    public void initAvailableColours(){this.availableColours.setAll(COLOUR_MAP.get(this.plasticType));}
+    public void initAvailableColours() {
+        this.availableColours.setAll(COLOUR_MAP.get(this.plasticType));
+    }
 
     public int getQuantity() {
         return quantity;
@@ -128,15 +138,15 @@ public class STLFile {
         availableColours.setAll(COLOUR_MAP.get(plasticType));
     }
 
-    public void resetColour(){
+    public void resetColour() {
         this.colour.set(COLOUR_MAP.get(plasticType)[0]);
     }
 
-    public StringProperty getColourProperty(){
+    public StringProperty getColourProperty() {
         return colour;
     }
 
-    public ImageView getPreview(){
+    public ImageView getPreview() {
         return new ImageView(preview);
     }
 
@@ -148,7 +158,7 @@ public class STLFile {
         this.resolution = resolution;
     }
 
-    public ObservableList<String> getAvailableColours(){
+    public ObservableList<String> getAvailableColours() {
         return this.availableColours;
     }
 }

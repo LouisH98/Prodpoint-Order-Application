@@ -20,10 +20,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import Application.TextAreaTableCell;
 
 import java.awt.*;
 import java.io.File;
@@ -67,6 +67,9 @@ public class MainController {
 
     @FXML
     private TableColumn<STLFile, String> resolutionColumn;
+
+    @FXML
+    private TableColumn<STLFile, String> notesColumn;
 
     @FXML
     private HBox orderInfoContainer;
@@ -242,12 +245,13 @@ public class MainController {
         colourColumn.setCellValueFactory(new PropertyValueFactory<>("colour"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         resolutionColumn.setCellValueFactory(new PropertyValueFactory<>("resolution"));
+        notesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
+
 
 
         /*
         Cell factories for custom cells
          */
-
         //custom cell factory to open the file with default program
         imagePreviewColumn.setCellFactory(param -> new TableCell<STLFile, ImageView>() {
             @Override
@@ -465,6 +469,21 @@ public class MainController {
             editedFile.resetColour();
 
 
+            try {
+                PropertiesHandler.saveFileInfo(editedFile);
+            } catch (IOException ex) {
+                System.out.println("Could not save changes..");
+            }
+        });
+
+        //TODO make this a custom cell factory with a TextArea in it
+        notesColumn.setCellFactory(TextAreaTableCell.forTableColumn());
+        notesColumn.setOnEditCommit(e -> {
+            STLFile editedFile = e.getRowValue();
+            System.out.println(e.getNewValue());
+            editedFile.setNotes(e.getNewValue());
+
+            //save the file
             try {
                 PropertiesHandler.saveFileInfo(editedFile);
             } catch (IOException ex) {

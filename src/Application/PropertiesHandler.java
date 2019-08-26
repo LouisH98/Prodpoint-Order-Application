@@ -95,6 +95,7 @@ public class PropertiesHandler {
         properties.setProperty(f.getFile().getName() + ".colour", f.getColour());
         properties.setProperty(f.getFile().getName() + ".resolution",f.getResolution());
         properties.setProperty(f.getFile().getName() + ".plasticType", f.getPlasticType());
+        properties.setProperty(f.getFile().getName() + ".notes", f.getNotes());
 
         //update last modified
         properties.setProperty("lastModified", LocalDate.now().toString());
@@ -122,11 +123,13 @@ public class PropertiesHandler {
         String plasticType = properties.getProperty(f.getName() + ".plasticType");
         String resolution = properties.getProperty(f.getName() + ".resolution");
         String colour = properties.getProperty(f.getName() + ".colour");
+        String notes = properties.getProperty(f.getName() + ".notes");
 
         newFile.setColour(colour);
         newFile.setPlasticType(plasticType);
         newFile.setQuantity(quantity);
         newFile.setResolution(resolution);
+        newFile.setNotes(notes);
 
         newFile.initAvailableColours();
 
