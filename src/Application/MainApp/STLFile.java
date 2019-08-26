@@ -66,9 +66,10 @@ public class STLFile {
     private Image preview;
     private String resolution;
     private ObservableList<String> availableColours;
+
     public STLFile(File f){
         /*
-        Try to load properties for this file
+        Set default values
          */
         this.file = f;
         this.plasticType = PLASTIC_TYPES[PLASTIC_PLA];

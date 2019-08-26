@@ -43,7 +43,9 @@ public class PropertiesHandler {
         );
     }
 
-
+    /*
+    Gets the orderID for a project directory
+     */
     public static String getOrderID(File orderDir) throws IOException{
         Properties properties = new Properties();
         FileInputStream is = new FileInputStream(orderDir.getPath() + "/" + ORDER_PROPERTIES_FILE);
