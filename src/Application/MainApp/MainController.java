@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,6 +15,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -22,6 +26,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class MainController {
+
+    /*
+    Injected FXML Components
+     */
 
     @FXML
     private MenuItem createNewOrderButton;
@@ -84,6 +92,9 @@ public class MainController {
     private ObservableList<STLFile> projectFiles = FXCollections.observableArrayList();
 
 
+    /*
+
+     */
     public void setDirectory(File directory) {
         this.directory = directory;
         infoLabel.setText("Please import some files\n" +
@@ -102,6 +113,8 @@ public class MainController {
             importFilesButton.setDisable(false);
             setOrderInfoLabels();
         }
+
+        //TODO Check if valid project directory
 
         //clear the table
         projectFiles.clear();
@@ -226,9 +239,11 @@ public class MainController {
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         resolutionColumn.setCellValueFactory(new PropertyValueFactory<>("resolution"));
 
+
         /*
         Cell factories for custom cells
          */
+
         materialColumn.setCellFactory(param -> {
             ComboBoxTableCell<STLFile, String> comboCell = new ComboBoxTableCell<STLFile, String>() {
                 @Override
@@ -330,18 +345,42 @@ public class MainController {
                 }
             };
 
+            /*
+            Event Handler to allow verification of content when enter pressed
+            (Checks if value can be parsed to integer)
+             */
+            EventHandler<KeyEvent> enterKeyEventHandler = event -> {
+                if(cell.getTableRow().getItem() != null){
+                    STLFile file = (STLFile) cell.getTableRow().getItem();
+
+                    if (event.getCode() == KeyCode.ENTER) {
+
+                        try {
+                            int newValue = Integer.parseInt(spinner.getEditor().textProperty().get());
+
+                            file.setQuantity(newValue);
+                        }
+                        catch (NumberFormatException e) {
+                            //reset the text to original value
+                            spinner.getEditor().setText(file.getQuantity() + "");
+                        }
+                    }
+                    event.consume();
+                }
+            };
+
+
+            spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
+
+            /*
+            When the spinner is toggled up or down, we want to save the changes.
+             */
             spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-                System.out.println("Spinner value changed");
-                System.out.println(newValue);
                 if (!oldValue.equals(newValue)) {
                     STLFile file = (STLFile) cell.getTableRow().getItem();
 
-                    try {
-                        file.setQuantity(spinner.getValue());
-                    } catch (NumberFormatException e) {
-                        AlertHandler.showAlert(Alert.AlertType.ERROR, "Invalid Number", "Please enter a valid number");
-                        spinner.getValueFactory().setValue(file.getQuantity());
-                    }
+                    file.setQuantity(newValue);
+
 
 
                     try {
@@ -352,9 +391,26 @@ public class MainController {
                 }
             });
 
+            //save value on focus lost
             spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
-                    spinner.increment(0); // won't change value, but will commit editor
+
+                    //first check if the text is a valid integer
+                    try{
+                        int newItemQuantity = Integer.parseInt(
+                                spinner.getEditor().getText()
+                        );
+
+                        spinner.increment(0); // won't change value, but will commit editor
+
+                    }
+                    catch (NumberFormatException e){
+                        if(cell.getTableRow().getItem() != null){
+                            STLFile file = (STLFile) cell.getTableRow().getItem();
+                            AlertHandler.showAlert(Alert.AlertType.ERROR, "Invalid Number", "Please enter a valid number");
+                            spinner.getEditor().setText(file.getQuantity() + "");
+                        }
+                    }
                 }
             });
 

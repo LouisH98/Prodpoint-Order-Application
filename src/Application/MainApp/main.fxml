@@ -68,7 +68,7 @@
          <children>
             <Label text="Order #:" visible="false">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                  <Font name="System Bold Italic" size="17.0" />
                </font>
                <HBox.margin>
                   <Insets right="-20.0" />
@@ -76,10 +76,10 @@
             </Label>
             <Label fx:id="orderNumberLabel">
                <font>
-                  <Font size="19.0" />
+                  <Font size="17.0" />
                </font>
             </Label>
-            <Label text="Client Name:" visible="false">
+            <Label text="Client:" visible="false">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -89,10 +89,10 @@
             </Label>
             <Label fx:id="clientNameLabel" textAlignment="CENTER">
                <font>
-                  <Font size="19.0" />
+                  <Font size="17.0" />
                </font>
             </Label>
-            <Label text="Last Updated:" visible="false">
+            <Label text="Last Modified:" visible="false">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -102,10 +102,10 @@
             </Label>
             <Label fx:id="lastUpdatedLabel">
                <font>
-                  <Font size="19.0" />
+                  <Font size="17.0" />
                </font>
             </Label>
-            <Label text="Due Date:" visible="false">
+            <Label text="Due:" visible="false">
                <font>
                   <Font name="System Bold" size="17.0" />
                </font>
@@ -115,17 +115,17 @@
             </Label>
             <Label fx:id="dueDateLabel">
                <font>
-                  <Font size="19.0" />
+                  <Font size="17.0" />
                </font>
             </Label>
-            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="154.0" spacing="10.0">
+            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="154.0" spacing="10.0" visible="false">
                <children>
-                  <Label fx:id="statusLabel">
+                  <Label fx:id="statusLabel" text="Status">
                      <font>
-                        <Font size="19.0" />
+                        <Font size="17.0" />
                      </font>
                   </Label>
-                  <Button fx:id="statusButton" mnemonicParsing="false" styleClass="status-button" text="Processing" visible="false" />
+                  <Button fx:id="statusButton" mnemonicParsing="false" styleClass="status-button" text="Processing" />
                </children>
             </HBox>
          </children>
