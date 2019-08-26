@@ -81,7 +81,7 @@
             </Label>
             <Label text="Client:" visible="false">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                   <Font name="System Bold Italic" size="17.0"/>
                </font>
                <HBox.margin>
                   <Insets right="-20.0" />
@@ -94,7 +94,7 @@
             </Label>
             <Label text="Last Modified:" visible="false">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                   <Font name="System Bold Italic" size="17.0"/>
                </font>
                <HBox.margin>
                   <Insets right="-20.0" />
@@ -107,7 +107,7 @@
             </Label>
             <Label text="Due:" visible="false">
                <font>
-                  <Font name="System Bold" size="17.0" />
+                   <Font name="System Bold Italic" size="17.0"/>
                </font>
                <HBox.margin>
                   <Insets right="-20.0" />

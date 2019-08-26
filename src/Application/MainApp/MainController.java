@@ -12,6 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -22,6 +25,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -243,6 +247,35 @@ public class MainController {
         /*
         Cell factories for custom cells
          */
+
+        //custom cell factory to open the file with default program
+        imagePreviewColumn.setCellFactory(param -> {
+            TableCell<STLFile, ImageView> cell = new TableCell<STLFile, ImageView>() {
+                @Override
+                protected void updateItem(ImageView item, boolean empty) {
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        STLFile stlFile = (STLFile) getTableRow().getItem();
+
+                        ImageView imageView = stlFile.getPreview();
+                        setGraphic(imageView);
+
+                        setOnMouseClicked(event -> {
+                            if (event.getClickCount() == 2) {
+                                try {
+                                    Desktop.getDesktop().open(stlFile.getFile());
+                                } catch (IOException e) {
+                                    AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
+                                }
+                            }
+                        });
+                    }
+                }
+            };
+
+            return cell;
+        });
 
         materialColumn.setCellFactory(param -> {
             ComboBoxTableCell<STLFile, String> comboCell = new ComboBoxTableCell<STLFile, String>() {
