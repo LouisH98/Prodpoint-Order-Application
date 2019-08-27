@@ -7,23 +7,20 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import Application.TextAreaTableCell;
 
 import java.awt.*;
 import java.io.File;
@@ -264,14 +261,23 @@ public class MainController {
                     ImageView imageView = stlFile.getPreview();
                     setGraphic(imageView);
 
+                    //open the file if double clicked
                     setOnMouseClicked(event -> {
-                        if (event.getClickCount() == 2) {
+                        if (event.getClickCount() == 1) {
                             try {
                                 Desktop.getDesktop().open(stlFile.getFile());
                             } catch (IOException e) {
                                 AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
                             }
                         }
+                    });
+
+                    setOnMouseEntered(event -> {
+                        setCursor(Cursor.HAND);
+                    });
+
+                    setOnMouseExited(event -> {
+                        setCursor(Cursor.DEFAULT);
                     });
                 }
             }
@@ -338,6 +344,15 @@ public class MainController {
             Spinner<Integer> spinner = new Spinner<>(spinnerValueFactory);
             spinner.setEditable(true);
 
+            /*
+            Disallow any non-integers from being entered
+             */
+            spinner.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
+                if (!newValue.matches("\\d*")) {
+                    spinner.getEditor().setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+
             TableCell<STLFile, Integer> cell = new TableCell<STLFile, Integer>() {
                 @Override
                 public void updateItem(Integer item, boolean empty) {
@@ -378,32 +393,6 @@ public class MainController {
                 }
             };
 
-            /*
-            Event Handler to allow verification of content when enter pressed
-            (Checks if value can be parsed to integer)
-             */
-            EventHandler<KeyEvent> enterKeyEventHandler = event -> {
-                if(cell.getTableRow().getItem() != null){
-                    STLFile file = (STLFile) cell.getTableRow().getItem();
-
-                    if (event.getCode() == KeyCode.ENTER) {
-
-                        try {
-                            int newValue = Integer.parseInt(spinner.getEditor().textProperty().get());
-
-                            file.setQuantity(newValue);
-                        }
-                        catch (NumberFormatException e) {
-                            //reset the text to original value
-                            spinner.getEditor().setText(file.getQuantity() + "");
-                        }
-                    }
-                    event.consume();
-                }
-            };
-
-
-            spinner.getEditor().addEventHandler(KeyEvent.KEY_PRESSED, enterKeyEventHandler);
 
             /*
             When the spinner is toggled up or down, we want to save the changes.
@@ -413,8 +402,6 @@ public class MainController {
                     STLFile file = (STLFile) cell.getTableRow().getItem();
 
                     file.setQuantity(newValue);
-
-
 
                     try {
                         PropertiesHandler.saveFileInfo(file);
@@ -427,23 +414,7 @@ public class MainController {
             //save value on focus lost
             spinner.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 if (!newValue) {
-
-                    //first check if the text is a valid integer
-                    try{
-                        int newItemQuantity = Integer.parseInt(
-                                spinner.getEditor().getText()
-                        );
-
-                        spinner.increment(0); // won't change value, but will commit editor
-
-                    }
-                    catch (NumberFormatException e){
-                        if(cell.getTableRow().getItem() != null){
-                            STLFile file = (STLFile) cell.getTableRow().getItem();
-                            AlertHandler.showAlert(Alert.AlertType.ERROR, "Invalid Number", "Please enter a valid number");
-                            spinner.getEditor().setText(file.getQuantity() + "");
-                        }
-                    }
+                    spinner.increment(0); // won't change value, but will commit editor
                 }
             });
 
@@ -476,7 +447,6 @@ public class MainController {
             }
         });
 
-        //TODO make this a custom cell factory with a TextArea in it
         notesColumn.setCellFactory(TextAreaTableCell.forTableColumn());
         notesColumn.setOnEditCommit(e -> {
             STLFile editedFile = e.getRowValue();
