@@ -4,6 +4,7 @@ import Application.*;
 import Application.CreateNewOrder.NewOrderController;
 import Application.ProcessingWindow.ProcessingWindowControl;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -315,6 +316,46 @@ public class MainController {
                 infoLabel.getScene().getStylesheets().add(getClass().getResource("/Application/light_style.css").toExternalForm());
             }
         });
+
+        /*
+        Enable right click on items to remove the file
+         */
+        //this works but you can right click anywhere
+//        MenuItem mi1 = new MenuItem("Remove File");
+//        mi1.setOnAction((ActionEvent event) -> {
+//            STLFile item = fileTable.getSelectionModel().getSelectedItem();
+//            if(item != null){
+//                File removedFile = item.getFile();
+//                fileTable.getItems().remove(item);
+//                removedFile.delete();
+//            }
+//        });
+//
+//        ContextMenu menu = new ContextMenu();
+//        menu.getItems().add(mi1);
+//        fileTable.setContextMenu(menu);
+
+        fileTable.setRowFactory(
+                tableView -> {
+                    final TableRow<STLFile> row = new TableRow<>();
+                    final ContextMenu rowMenu = new ContextMenu();
+                    MenuItem removeItem = new MenuItem("Remove item from project");
+                    removeItem.setOnAction(event -> {
+                        STLFile removedItem = row.getItem();
+                        File removedFile = removedItem.getFile();
+                        fileTable.getItems().remove(removedItem);
+                        removedFile.delete();
+                    });
+
+                    rowMenu.getItems().add(removeItem);
+
+                    // only display context menu for non-null items:
+                    row.contextMenuProperty().bind(
+                            Bindings.when(Bindings.isNotNull(row.itemProperty()))
+                                    .then(rowMenu)
+                                    .otherwise((ContextMenu) null));
+                    return row;
+                });
 
 
         //Set Cell Value Factories for initial values

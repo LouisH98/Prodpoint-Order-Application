@@ -15,7 +15,7 @@ CSS For light theme Prodpoint Application
 
 /* Selected Row*/
 .table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: rgba(0, 165, 255, 0.65);
+    -fx-background-color: rgba(0, 147, 255, 0.48);
 }
 
 /* Change header font size*/
