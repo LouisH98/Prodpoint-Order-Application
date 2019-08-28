@@ -85,7 +85,7 @@ public class ProcessingWindowControl {
         mainWindow = controller;
     }
 
-    public static File importFile(String from, String to) throws IOException {
+    public static File importFile(String from, String to) throws Exception {
         Path src = Paths.get(from);
         Path dest = Paths.get(to);
         Files.copy(src, dest);
@@ -107,10 +107,8 @@ public class ProcessingWindowControl {
                 try{
                     importFile(f.getPath(), projectDirectory.getPath() + "/" + f.getName());
 
-                }
-                catch (IOException e){
+                } catch (Exception e) {
                     System.out.println("Failed to import file: " + f.getName());
-                    e.printStackTrace();
                 }
             }
         }

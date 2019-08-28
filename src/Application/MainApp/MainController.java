@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 
 public class MainController {
@@ -255,8 +256,12 @@ public class MainController {
 
         try {
             importedFile = ProcessingWindowControl.importFile(newFile.getPath(), directory.getPath() + "/" + newFile.getName());
-        } catch (IOException e) {
-            AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not import file", "Reason: " + e.getMessage());
+        } catch (Exception e) {
+            if (e instanceof FileAlreadyExistsException) {
+                AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not import file", "File is already in the project.");
+            } else {
+                AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not import file", "An unknown error occurred: " + e.toString() + " : " + e.getMessage());
+            }
         }
 
 
@@ -271,6 +276,7 @@ public class MainController {
             Make STLFile object and save the info
              */
             STLFile newSTLFile = new STLFile(importedFile);
+            newSTLFile.initAvailableColours();
             try {
                 PropertiesHandler.saveFileInfo(newSTLFile);
             } catch (IOException e) {
