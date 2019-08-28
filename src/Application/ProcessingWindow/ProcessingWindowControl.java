@@ -1,9 +1,8 @@
 package Application.ProcessingWindow;
 
 import Application.AlertHandler;
-import Application.STLProcessor;
 import Application.MainApp.MainController;
-
+import Application.STLProcessor;
 import com.jfoenix.controls.JFXButton;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -86,10 +85,12 @@ public class ProcessingWindowControl {
         mainWindow = controller;
     }
 
-    public void importFile(String from, String to) throws IOException{
+    public static File importFile(String from, String to) throws IOException {
         Path src = Paths.get(from);
         Path dest = Paths.get(to);
         Files.copy(src, dest);
+
+        return dest.toFile();
     }
 
     /*
@@ -141,9 +142,10 @@ public class ProcessingWindowControl {
                                 this.cancel();
                             }
 
-                            updateProgress(++count, numFiles);
-                            updateMessage(count + " of " + numFiles);
-
+                            if (STLProcessor.isSTL(f)) {
+                                updateProgress(++count, numFiles);
+                                updateMessage(count + " of " + numFiles);
+                            }
                         }
                     }
                     return null;

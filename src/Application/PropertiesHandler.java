@@ -19,8 +19,8 @@ public class PropertiesHandler {
     public static final String ORDER_PROPERTIES_FILE = "order_properties.xml";
     public static final File ORDERS_FOLDER = new File(System.getProperty("user.home") + "/Prodpoint Orders");
 
-    public static final String ORDER_STATUS_PROCESSING = "processing";
-    public static final String ORDER_STATUS_COMPLETED = "completed";
+    public static final String ORDER_STATUS_PROCESSING = "PROCESSING";
+    public static final String ORDER_STATUS_COMPLETED = "COMPLETED";
 
     public static File getOrdersFolder() {
         return ORDERS_FOLDER;

@@ -45,6 +45,7 @@ public class STLFile {
     public static Map<String, String[]> COLOUR_MAP;
     public static String[] RESOLUTIONS = {"0.2", "0.15", "0.1"};
 
+
     //fill the map
     static {
         COLOUR_MAP = new HashMap<>();

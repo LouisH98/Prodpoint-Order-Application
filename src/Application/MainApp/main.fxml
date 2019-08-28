@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="659.0" prefWidth="1143.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Application.MainApp.MainController">
    <children>
       <MenuBar>
@@ -34,7 +26,8 @@
             <Menu mnemonicParsing="false" text="Project">
                <items>
                   <MenuItem fx:id="importFilesButton" mnemonicParsing="false" onAction="#openImportWindow" text="Import files from folder" />
-                  <MenuItem mnemonicParsing="false" text="Import single file" />
+                   <MenuItem fx:id="importSingleFile" mnemonicParsing="false" onAction="#importFileToProject"
+                             text="Import single file"/>
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Options">
@@ -42,6 +35,14 @@
               <MenuItem mnemonicParsing="false" text="Toggle Dark Mode" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="DEBUG">
+                <items>
+                    <MenuItem fx:id="removeFiles" mnemonicParsing="false" onAction="#removeAllProjectFiles"
+                              text="Remove all items from dataset"/>
+                    <MenuItem fx:id="refreshTable" mnemonicParsing="false" onAction="#debugRefreshTable"
+                              text="Refresh Table"/>
+                </items>
+            </Menu>
         </menus>
       </MenuBar>
       <TableView fx:id="fileTable" editable="true" VBox.vgrow="ALWAYS">

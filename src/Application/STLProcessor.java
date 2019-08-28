@@ -21,7 +21,7 @@ public class STLProcessor {
      @param dir - The directory to be searched
      @return ArrayList<String> - Each entry is a file name
      */
-    public static ArrayList<String> getFiles(File dir){
+    public static ArrayList<String> getFileNames(File dir) {
         File[] files = dir.listFiles();
 
         ArrayList<String> fileNames = new ArrayList<>();
@@ -33,6 +33,26 @@ public class STLProcessor {
         }
         return fileNames;
     }
+
+    /**
+     * Function that returns all STL files in a folder
+     *
+     * @param dir - The directory to be searched
+     * @return ArrayList<File> - Each entry is an STL file from that folder
+     */
+    public static ArrayList<File> getSTLFiles(File dir) {
+        File[] files = dir.listFiles();
+
+        ArrayList<File> stlFiles = new ArrayList<>();
+
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile() && isSTL(files[i])) {
+                stlFiles.add(files[i]);
+            }
+        }
+        return stlFiles;
+    }
+
 
     /**
     Function to get the extension of a file
@@ -91,9 +111,8 @@ public class STLProcessor {
             catch (IOException e){
                 System.out.println("Could not execute command");
             }
-        }
-        else{
-            System.out.println("Not an STL file");
+        } else {
+            System.out.println("Skipped: " + file.getName() + ". Not an STL file.");
         }
         return "";
     }

@@ -17,6 +17,15 @@ public class OrderInfoWrapper {
         this.clientName = clientName;
         this.dueDate = dueDate;
         this.lastModified = lastModified;
+        this.orderStatus = orderStatus;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public LocalDate getLastModified() {

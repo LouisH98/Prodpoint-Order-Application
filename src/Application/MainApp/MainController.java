@@ -20,16 +20,29 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainController {
 
     /*
     Injected FXML Components
+     */
+
+    /*
+    TODO DEBUG REMOVE WHEN DEPLOYING
+     */
+
+    @FXML
+    private MenuItem removeFiles;
+
+    /*
+    END DEBUG ITEMS
      */
 
     @FXML
@@ -96,13 +109,39 @@ public class MainController {
     private ObservableList<STLFile> projectFiles = FXCollections.observableArrayList();
 
 
-    /*
+    //TODO REMOVE WHEN DONE
+    @FXML
+    void removeAllProjectFiles(ActionEvent event) {
+        projectFiles.clear();
+    }
 
+    @FXML
+    void debugRefreshTable(ActionEvent event) {
+        fileTable.refresh();
+    }
+
+    /*
+    Checks for a order_properties.xml file, returns true if one is found.
+     */
+    boolean isValidProjectDirectory(File directory) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.getName().equals("order_properties.xml")) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /*
+    Sets the project directory - sets up labels and calls functions to generate columns
      */
     public void setDirectory(File directory) {
         this.directory = directory;
         infoLabel.setText("Please import some files\n" +
-                "(File -> Import STL Files)");
+                "(Project -> Import STL Files)");
 
         //set the window title to reflect the directory change
         try {
@@ -118,51 +157,45 @@ public class MainController {
             setOrderInfoLabels();
         }
 
-        //TODO Check if valid project directory
-
         //clear the table
         projectFiles.clear();
-        fileTable.getItems().clear();
     }
 
     public void setMainApp(Main main) {
         this.mainApp = main;
     }
 
-    public void generateColumns(boolean isNew) {
-        File[] stlFiles = directory.listFiles();
-        if (stlFiles != null) {
-            for (File f : stlFiles) {
-                if (STLProcessor.isSTL(f)) {
-                    STLFile currentSTLFile;
-                    //if we are creating a new project then
-                    if (isNew) {
-                        currentSTLFile = new STLFile(f);
-                        try {
-                            //save the file properties for new file
-                            PropertiesHandler.saveFileInfo(currentSTLFile);
-                            currentSTLFile.initAvailableColours();
-                            projectFiles.add(currentSTLFile);
-                        } catch (IOException e) {
-                            System.out.println("Failed to save file info to file");
-                            e.printStackTrace();
-                        }
-                    }
-                    //otherwise create STL objects with loaded info
-                    else {
-                        try {
-                            currentSTLFile = PropertiesHandler.getFileInfo(f);
-                            projectFiles.add(currentSTLFile);
-                        } catch (IOException e) {
-                            System.out.println("Failed to load file info");
-                        }
-                    }
+
+    public void generateColumns(boolean isNewProject) {
+        projectFiles.clear();
+        ArrayList<File> stlFiles = STLProcessor.getSTLFiles(directory);
+        for (File f : stlFiles) {
+            STLFile currentSTLFile;
+            //if we are creating a new project then create new objects
+            if (isNewProject) {
+                currentSTLFile = new STLFile(f);
+                try {
+                    //save the file properties for new file
+                    PropertiesHandler.saveFileInfo(currentSTLFile);
+                    currentSTLFile.initAvailableColours();
+                    projectFiles.add(currentSTLFile);
+                } catch (IOException e) {
+                    System.out.println("Failed to save file info to file when generating table");
+                    e.printStackTrace();
                 }
             }
-
-            //now add all the STL files in the observable array to the Table
-            fileTable.setItems(projectFiles);
+            //otherwise create STL objects with loaded info
+            else {
+                try {
+                    currentSTLFile = PropertiesHandler.getFileInfo(f);
+                    projectFiles.add(currentSTLFile);
+                } catch (IOException e) {
+                    System.out.println("Failed to load file info");
+                }
+            }
         }
+        //now add all the STL files in the observable array to the Table
+        fileTable.setItems(projectFiles);
     }
 
     //this function updates the bottom info labels with the info from the order
@@ -172,7 +205,7 @@ public class MainController {
             orderInfo = PropertiesHandler.getOrderInfo(directory);
         }
         catch (IOException e){
-            AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not load order info", "Could not load order info. Please try again.");
+            AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not load order info when setting labels", "Could not load order info. Please try again.");
         }
         //if we can get the info, set the labels
         if(orderInfo != null){
@@ -185,8 +218,6 @@ public class MainController {
             for(Node n : orderInfoContainer.getChildren()){
                 n.setVisible(true);
             }
-
-            //TODO set status button to status
         }
     }
 
@@ -209,6 +240,49 @@ public class MainController {
     }
 
     @FXML
+    void importFileToProject(ActionEvent event) {
+
+        //open file selector
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Import STL File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("STL Files (*.stl)", "*.stl"));
+        File newFile = fileChooser.showOpenDialog(lastUpdatedLabel.getScene().getWindow());
+
+        /*
+        Import the file into project directory
+         */
+        File importedFile = null;
+
+        try {
+            importedFile = ProcessingWindowControl.importFile(newFile.getPath(), directory.getPath() + "/" + newFile.getName());
+        } catch (IOException e) {
+            AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not import file", "Reason: " + e.getMessage());
+        }
+
+
+        if (importedFile != null) {
+            /*
+            Generate thumbnail
+             */
+            STLProcessor.makeThumbnail(importedFile);
+
+
+            /*
+            Make STLFile object and save the info
+             */
+            STLFile newSTLFile = new STLFile(importedFile);
+            try {
+                PropertiesHandler.saveFileInfo(newSTLFile);
+            } catch (IOException e) {
+                System.out.println("Could not save file info while importing single file");
+            }
+
+            fileTable.getItems().add(newSTLFile);
+            fileTable.refresh();
+        }
+    }
+
+    @FXML
     void openProject(ActionEvent event) {
         DirectoryChooser projectChooser = new DirectoryChooser();
         projectChooser.setInitialDirectory(PropertiesHandler.getOrdersFolder());
@@ -216,9 +290,11 @@ public class MainController {
         File projectDirectory = projectChooser.showDialog(infoLabel.getScene().getWindow());
 
         if (projectDirectory != null) {
-            if (projectDirectory.isDirectory()) {
+            if (isValidProjectDirectory(projectDirectory)) {
                 setDirectory(projectDirectory);
                 generateColumns(false);
+            } else {
+                AlertHandler.showAlert(Alert.AlertType.ERROR, "Invalid Project Directory", "This folder doesn't appear to be a project directory. Please try choosing the folder again.");
             }
         }
     }
@@ -257,28 +333,29 @@ public class MainController {
                     setGraphic(null);
                 } else {
                     STLFile stlFile = (STLFile) getTableRow().getItem();
+                    if (stlFile != null) {
+                        ImageView imageView = stlFile.getPreview();
+                        setGraphic(imageView);
 
-                    ImageView imageView = stlFile.getPreview();
-                    setGraphic(imageView);
-
-                    //open the file if double clicked
-                    setOnMouseClicked(event -> {
-                        if (event.getClickCount() == 1) {
-                            try {
-                                Desktop.getDesktop().open(stlFile.getFile());
-                            } catch (IOException e) {
-                                AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
+                        //open the file if double clicked
+                        setOnMouseClicked(event -> {
+                            if (event.getClickCount() == 1) {
+                                try {
+                                    Desktop.getDesktop().open(stlFile.getFile());
+                                } catch (IOException e) {
+                                    AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    setOnMouseEntered(event -> {
-                        setCursor(Cursor.HAND);
-                    });
+                        setOnMouseEntered(event -> {
+                            setCursor(Cursor.HAND);
+                        });
 
-                    setOnMouseExited(event -> {
-                        setCursor(Cursor.DEFAULT);
-                    });
+                        setOnMouseExited(event -> {
+                            setCursor(Cursor.DEFAULT);
+                        });
+                    }
                 }
             }
         });
@@ -367,6 +444,7 @@ public class MainController {
                         }
                     } else {
                         setGraphic(null);
+                        setText(null);
                     }
                 }
 
