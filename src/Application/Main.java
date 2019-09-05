@@ -2,7 +2,6 @@ package Application;
 
 import Application.MainApp.MainController;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +14,7 @@ public class Main extends Application {
     Parent root;
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("MainApp/main.fxml"));
         root = loader.load();
         primaryStage.setTitle("Prodpoint Order Application");

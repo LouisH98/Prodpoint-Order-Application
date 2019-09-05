@@ -7,6 +7,7 @@ import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -48,17 +49,17 @@ public class NewOrderController {
 
         boolean problem = false;
 
-        //check boxes aren't empty
-        if (orderNumberField.getText().length() == 0) {
-            orderNumberField.setStyle("-fx-border-color: red");
-            problem = true;
+        for (Node n : orderNumberField.getParent().getChildrenUnmodifiable()) {
+            if (n instanceof TextField) {
+                if (((TextField) n).getText().length() == 0) {
+                    n.setStyle("-fx-border-color: red; -fx-border-radius: 2px;");
+                    problem = true;
+                }
+            }
         }
-        if (clientNameField.getText().length() == 0) {
-            clientNameField.setStyle("-fx-border-color: red");
-            problem = true;
-        }
+
         if (dueDatePicker.getEditor().getText().length() == 0) {
-            dueDatePicker.setStyle("-fx-border-color: red");
+            dueDatePicker.setStyle("-fx-border-color: red; -fx-border-radius: 2px;");
             problem = true;
         }
 
@@ -72,7 +73,6 @@ public class NewOrderController {
         of the order in there.
         Then we can set the main app's directory to point to this folder & close the window.
          */
-
         String orderNumberString = this.orderNumberField.getText();
 
         File orderFolder = new File(PropertiesHandler.getOrdersFolder().getPath() + "/" + orderNumberString);

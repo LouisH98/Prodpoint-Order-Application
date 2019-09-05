@@ -2,6 +2,11 @@
 /*
 CSS For light theme Prodpoint Application
  */
+
+.root {
+    -selected-colour: rgba(0, 147, 255, 0.34);
+}
+
 .my-button{
     background: gainsboro;
 }
@@ -15,8 +20,10 @@ CSS For light theme Prodpoint Application
 
 /* Selected Row*/
 .table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: rgba(0, 147, 255, 0.48);
+    -fx-background-color: -selected-colour;
+    -fx-table-cell-border-color: derive(-selected-colour, 50%);
 }
+
 
 /* Change header font size*/
 .table-view .column-header{
@@ -37,4 +44,10 @@ CSS For light theme Prodpoint Application
 .order-info-wrapper{
     -fx-background-color: white;
     -fx-border-color: transparent;
+}
+
+.text-field:error {
+    -fx-text-box-border: red;
+    -fx-focus-color: red;
+    -fx-border-radius: 2px;
 }
