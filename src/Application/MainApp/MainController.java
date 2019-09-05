@@ -100,9 +100,6 @@ public class MainController {
     private Label dueDateLabel;
 
     @FXML
-    private Label statusLabel;
-
-    @FXML
     private Button statusButton;
 
     private File directory;
@@ -225,12 +222,10 @@ public class MainController {
             //set the status button CSS class and text
             String orderStatus = orderInfo.getOrderStatus();
             if (orderStatus.equals(PropertiesHandler.ORDER_STATUS_PROCESSING)) {
-//                statusButton.getStyleClass().remove("completed-button");
                 statusButton.getStyleClass().clear();
                 statusButton.getStyleClass().add("processing-button");
                 statusButton.setText("Processing...");
             } else if (orderStatus.equals(PropertiesHandler.ORDER_STATUS_COMPLETED)) {
-//                statusButton.getStyleClass().remove("processing-button");
                 statusButton.getStyleClass().clear();
                 statusButton.getStyleClass().add("completed-button");
                 statusButton.setText("Completed!");
@@ -341,13 +336,11 @@ public class MainController {
                 if (currentOrderStatus.equals(PropertiesHandler.ORDER_STATUS_PROCESSING)) {
                     //if status is processing, then user is trying to change it to completed.
                     PropertiesHandler.setOrderStatus(PropertiesHandler.ORDER_STATUS_COMPLETED, directory);
-//                    statusButton.getStyleClass().remove("processing-button");
                     statusButton.getStyleClass().clear();
                     statusButton.getStyleClass().add("completed-button");
                     statusButton.setText("Completed!");
                 } else if (currentOrderStatus.equals(PropertiesHandler.ORDER_STATUS_COMPLETED)) {
                     PropertiesHandler.setOrderStatus(PropertiesHandler.ORDER_STATUS_PROCESSING, directory);
-//                    statusButton.getStyleClass().remove("completed-button");
                     statusButton.getStyleClass().clear();
                     statusButton.getStyleClass().add("processing-button");
                     statusButton.setText("Processing...");
@@ -397,39 +390,37 @@ public class MainController {
         Cell factories for custom cells
          */
         //custom cell factory to open the file with default program
-        imagePreviewColumn.setCellFactory(param -> new TableCell<STLFile, ImageView>() {
-            @Override
-            protected void updateItem(ImageView item, boolean empty) {
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    STLFile stlFile = (STLFile) getTableRow().getItem();
-                    if (stlFile != null) {
-                        ImageView imageView = stlFile.getPreview();
-                        setGraphic(imageView);
+        imagePreviewColumn.setCellFactory(param -> {
+            return new TableCell<STLFile, ImageView>() {
+                @Override
+                protected void updateItem(ImageView item, boolean empty) {
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        STLFile stlFile = (STLFile) getTableRow().getItem();
+                        if (stlFile != null) {
+                            ImageView imageView = stlFile.getPreview();
+                            setGraphic(imageView);
 
-                        //open the file if double clicked
-                        setOnMouseClicked(event -> {
-                            MouseButton button = event.getButton();
-                            if (event.getClickCount() == 1 && button == MouseButton.PRIMARY) {
-                                try {
-                                    Desktop.getDesktop().open(stlFile.getFile());
-                                } catch (IOException e) {
-                                    AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
+                            //open the file if double clicked
+                            setOnMouseClicked(event -> {
+                                MouseButton button = event.getButton();
+                                if (event.getClickCount() == 1 && button == MouseButton.PRIMARY) {
+                                    try {
+                                        Desktop.getDesktop().open(stlFile.getFile());
+                                    } catch (IOException e) {
+                                        AlertHandler.showAlert(Alert.AlertType.ERROR, "Could not open the STL file", "Could not open the STL file");
+                                    }
                                 }
-                            }
-                        });
+                            });
 
-                        setOnMouseEntered(event -> {
-                            setCursor(Cursor.HAND);
-                        });
+                            setOnMouseEntered(event -> setCursor(Cursor.HAND));
 
-                        setOnMouseExited(event -> {
-                            setCursor(Cursor.DEFAULT);
-                        });
+                            setOnMouseExited(event -> setCursor(Cursor.DEFAULT));
+                        }
                     }
                 }
-            }
+            };
         });
 
         materialColumn.setCellFactory(param -> {
