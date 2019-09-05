@@ -119,14 +119,19 @@
                   <Font size="17.0" />
                </font>
             </Label>
-            <HBox alignment="CENTER" prefHeight="78.0" prefWidth="154.0" spacing="10.0" visible="false">
+             <HBox alignment="CENTER_LEFT" prefHeight="78.0" prefWidth="154.0" spacing="10.0" visible="false"
+                   HBox.hgrow="NEVER">
                <children>
-                  <Label fx:id="statusLabel" text="Status">
+                   <Label fx:id="statusLabel" text="Status:">
                      <font>
-                        <Font size="17.0" />
+                         <Font name="System Bold Italic" size="17.0"/>
                      </font>
                   </Label>
-                  <Button fx:id="statusButton" mnemonicParsing="false" styleClass="status-button" text="Processing" />
+                   <Button fx:id="statusButton" mnemonicParsing="false" styleClass="status-button" text="Processing">
+                       <font>
+                           <Font size="14.0"/>
+                       </font>
+                   </Button>
                </children>
             </HBox>
          </children>

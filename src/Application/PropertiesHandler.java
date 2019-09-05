@@ -43,6 +43,24 @@ public class PropertiesHandler {
         );
     }
 
+    public static void setOrderStatus(String status, File orderDir) throws IOException {
+        //check valid status
+        if (!(status.equals(ORDER_STATUS_COMPLETED) || status.equals(ORDER_STATUS_PROCESSING))) {
+            System.out.println("Tried to set illegal order status");
+            return;
+        }
+
+        Properties properties = new Properties();
+        FileInputStream inputStream = new FileInputStream(orderDir.getPath() + "/" + ORDER_PROPERTIES_FILE);
+        properties.loadFromXML(inputStream);
+
+        properties.setProperty("status", status);
+
+        FileOutputStream out = new FileOutputStream(orderDir.getPath() + "/" + ORDER_PROPERTIES_FILE);
+        properties.storeToXML(out, null);
+        out.close();
+    }
+
     /*
     Gets the orderID for a project directory
      */

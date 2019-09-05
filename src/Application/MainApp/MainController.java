@@ -19,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -156,7 +157,7 @@ public class MainController {
         //allow the user to import files if the directory is valid
         if (directory.isDirectory()) {
             importFilesButton.setDisable(false);
-            setOrderInfoLabels();
+            updateOrderInfoLabels();
         }
 
         //clear the table
@@ -201,7 +202,7 @@ public class MainController {
     }
 
     //this function updates the bottom info labels with the info from the order
-    public void setOrderInfoLabels(){
+    public void updateOrderInfoLabels() {
         OrderInfoWrapper orderInfo = null;
         try{
             orderInfo = PropertiesHandler.getOrderInfo(directory);
@@ -220,6 +221,21 @@ public class MainController {
             for(Node n : orderInfoContainer.getChildren()){
                 n.setVisible(true);
             }
+
+            //set the status button CSS class and text
+            String orderStatus = orderInfo.getOrderStatus();
+            if (orderStatus.equals(PropertiesHandler.ORDER_STATUS_PROCESSING)) {
+//                statusButton.getStyleClass().remove("completed-button");
+                statusButton.getStyleClass().clear();
+                statusButton.getStyleClass().add("processing-button");
+                statusButton.setText("Processing...");
+            } else if (orderStatus.equals(PropertiesHandler.ORDER_STATUS_COMPLETED)) {
+//                statusButton.getStyleClass().remove("processing-button");
+                statusButton.getStyleClass().clear();
+                statusButton.getStyleClass().add("completed-button");
+                statusButton.setText("Completed!");
+            }
+
         }
     }
 
@@ -317,24 +333,32 @@ public class MainController {
             }
         });
 
-        /*
-        Enable right click on items to remove the file
-         */
-        //this works but you can right click anywhere
-//        MenuItem mi1 = new MenuItem("Remove File");
-//        mi1.setOnAction((ActionEvent event) -> {
-//            STLFile item = fileTable.getSelectionModel().getSelectedItem();
-//            if(item != null){
-//                File removedFile = item.getFile();
-//                fileTable.getItems().remove(item);
-//                removedFile.delete();
-//            }
-//        });
-//
-//        ContextMenu menu = new ContextMenu();
-//        menu.getItems().add(mi1);
-//        fileTable.setContextMenu(menu);
+        //Add functionality to status button
+        statusButton.setOnMouseClicked(e -> {
+            try {
+                OrderInfoWrapper info = PropertiesHandler.getOrderInfo(directory);
+                String currentOrderStatus = info.getOrderStatus();
+                if (currentOrderStatus.equals(PropertiesHandler.ORDER_STATUS_PROCESSING)) {
+                    //if status is processing, then user is trying to change it to completed.
+                    PropertiesHandler.setOrderStatus(PropertiesHandler.ORDER_STATUS_COMPLETED, directory);
+//                    statusButton.getStyleClass().remove("processing-button");
+                    statusButton.getStyleClass().clear();
+                    statusButton.getStyleClass().add("completed-button");
+                    statusButton.setText("Completed!");
+                } else if (currentOrderStatus.equals(PropertiesHandler.ORDER_STATUS_COMPLETED)) {
+                    PropertiesHandler.setOrderStatus(PropertiesHandler.ORDER_STATUS_PROCESSING, directory);
+//                    statusButton.getStyleClass().remove("completed-button");
+                    statusButton.getStyleClass().clear();
+                    statusButton.getStyleClass().add("processing-button");
+                    statusButton.setText("Processing...");
+                }
+            } catch (IOException err) {
+                System.out.println("Error setting project status :(");
+                err.printStackTrace();
+            }
+        });
 
+        //set the row factory to enable right click on a row to remove item from project.
         fileTable.setRowFactory(
                 tableView -> {
                     final TableRow<STLFile> row = new TableRow<>();
@@ -386,7 +410,8 @@ public class MainController {
 
                         //open the file if double clicked
                         setOnMouseClicked(event -> {
-                            if (event.getClickCount() == 1) {
+                            MouseButton button = event.getButton();
+                            if (event.getClickCount() == 1 && button == MouseButton.PRIMARY) {
                                 try {
                                     Desktop.getDesktop().open(stlFile.getFile());
                                 } catch (IOException e) {
