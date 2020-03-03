@@ -58,6 +58,9 @@ public class MainController {
     private MenuItem importFilesButton;
 
     @FXML
+    private MenuItem importSingleFile;
+
+    @FXML
     private Label infoLabel;
 
     @FXML
@@ -154,6 +157,7 @@ public class MainController {
         //allow the user to import files if the directory is valid
         if (directory.isDirectory()) {
             importFilesButton.setDisable(false);
+            importSingleFile.setDisable(false);
             updateOrderInfoLabels();
         }
 
