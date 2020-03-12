@@ -21,7 +21,7 @@ The application should also be cross platform
 #### Language
 My initial plan was to use [Electron](https://www.electronjs.org/), which is essetially a Nodejs server with a Chromium frontend, both using JavaScript as the scripting language. 
 
-However at the time I had a lot more experiance developing in Java, especially with an object oriented approach.
+However at the time I had a lot more experience developing in Java, especially with an object oriented approach.
 This led me to choose the JavaFX framework to make the GUI for the application, with Java as the language.
 
 #### STL Rendering
